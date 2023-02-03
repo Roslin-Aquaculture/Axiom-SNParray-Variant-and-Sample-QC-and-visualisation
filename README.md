@@ -45,7 +45,7 @@ plink --file myfilename --exclude variantlist.txt --recode --allow-extra-chr --m
 The `--exclude` flag will do the same for variants.
 
 ## Basic visualusation of population structure with Principal Component Analysis (PCA) ##
-### 1. data prep for PCA ###
+### Data prep for PCA ###
 ```
 plink --file myfilename --double-id --allow-extra-chr --set-missing-var-ids @:# --indep-pairwise 50 10 0.1 --out outputfile
 plink --file myfilename --double-id --allow-extra-chr --set-missing-var-ids @:# --extract outputfile.prune.in --make-bed --pca --out outputfile
@@ -57,7 +57,7 @@ The subsequent PCA analysis and data visulatisation will be done in [R](https://
 ## PCA analysis in R ##
 The `.eigenval` and `.eingenvec` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
 
-### 2. R script  ###
+### R script  ###
 ```R
 #Install packages
 install.packages("tidyverse")
