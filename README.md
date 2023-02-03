@@ -56,7 +56,7 @@ The subsequent PCA analysis and data visulatisation will be done in [R](https://
 The `.eigenval` and `.eingenvec` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
 
 ### R script example ###
-``` {r}
+``` R
 #Install packages
 install.packages("tidyverse")
 install.packages(ggplot2")
@@ -169,7 +169,7 @@ awk '/CV/ {print $3,$4}' *out | cut -c 4,7-20 > (myfile).cv.error
 
 ### Visualising Admixture output in R ###
 Once the Admixture analysis is done and you have defined K value which will be used for visualisation, the data can be exported to into  `R` for visualisation:
-```
+```R
 # load libraries
 
 library(tidyverse)
