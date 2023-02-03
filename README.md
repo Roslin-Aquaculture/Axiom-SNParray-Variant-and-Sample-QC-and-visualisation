@@ -14,11 +14,12 @@ Whilst the software provides standard parameters for sample and array QC, it is 
 Once the files have been imported to the HPC the sample CR can be explored using plink.
 first, to explore data missingess within individuals and markers, we'll run the command:
 
----
-plink --file (yourfilename) --missing 
----
-
+<p> plink --file (yourfilename) --missing </p>
+\
 This command will generate two files:
+\
 .imiss (individual missingness)
+\
 .lmiss (marker missingness)
+\
 
