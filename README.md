@@ -53,7 +53,7 @@ These commands will generate both `.eigenval` and `.eigenvec`  files, which are 
 The subsequent PCA analysis and data visulatisation will be done in [R](https://www.r-project.org/) which is freely available online.<br />
 
 ## PCA analysis in R ##
-The `.eigenval` and `**.eingenvec**` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
+The `.eigenval` and `.eingenvec` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
 
 ### R script example ###
 ``` {r}
