@@ -18,6 +18,13 @@ first, to explore data missingess within individuals and markers, we'll run the 
 plink --file (yourfilename) --missing 
 ---
 This command will generate two files: <br />
-.imiss (individual missingness) <br />
-.lmiss (marker missingness) <br />
+**.imiss** (individual missingness) <br />
+**.lmiss** (marker missingness) <br />
+
+From these two files, you can estimate the average CR of your indivduals/markers as well as identify those that fall under the selected threshold. Whilst the threshold for sample CR is normally > 90%, and marker CR of > 95%, depending on your data and aims of your study, you can select different thresholds.
+
+# Excluding individuals and markers with non-desirable CR #
+
+
+
 
