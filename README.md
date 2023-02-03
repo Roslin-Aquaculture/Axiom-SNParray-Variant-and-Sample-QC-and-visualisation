@@ -18,8 +18,8 @@ Data missingess within individuals and variants can be explored using the comman
 plink --file (yourfilename) --missing 
 ```
 This command will generate two files: <br />
-`**.imiss**` (individual missingness) <br />
-`**.lmiss**` (variant missingness) <br />
+`.imiss` (individual missingness) <br />
+`.lmiss` (variant missingness) <br />
 
 From these two files, you can estimate the average CR of your indivduals/variants as well as identify those that fall under the selected threshold. Whilst the threshold for sample CR is normally > 90%, and variant CR of > 95%, depending on your data and aims of your study, you can select different thresholds.
 
@@ -30,17 +30,17 @@ Individuals with CR below the selected threshold can be excluded using:
 plink --file myfilename --remove indlist.txt --recode --allow-extra-chr --make-bed --out (outputfile)
 ```
 
-the flag `**--remove**` requires a space/tab-delimited text file with different columns including:  <br />
+the flag `--remove` requires a space/tab-delimited text file with different columns including:  <br />
 family IDs - column 1 <br />
 Within-family IDs - column 2 <br />
 
-the `**--recode**` flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
-the `**--allow-extra-chr**` flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
-the `**--make-bed**` flag will generate a new **.bed** file with the remaining individuals/variants.
+the `--recode` flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
+the `--allow-extra-chr` flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
+the `--make-bed` flag will generate a new **.bed** file with the remaining individuals/variants.
 ```
-plink --file (yourfilename) --exclude (textfile) --recode --allow-extra-chr --make-bed --out (outputfile)
+plink --file myfilename --exclude variantlist.txt --recode --allow-extra-chr --make-bed --out outputfile
 ```
-The `**--exclude**` flag will do the same for variants.
+The `--exclude` flag will do the same for variants.
 
 ## Basic visualusation of population structure with Principal Component Analysis (PCA) ##
 ### 1. data prep for PCA ###
@@ -48,12 +48,12 @@ The `**--exclude**` flag will do the same for variants.
 plink --file myfilename --double-id --allow-extra-chr --set-missing-var-ids @:# --indep-pairwise 50 10 0.1 --out outputfile
 plink --file myfilename --double-id --allow-extra-chr --set-missing-var-ids @:# --extract outputfile.prune.in --make-bed --pca --out outputfile
 ```
-These commands will generate both `**.eigenval**` and `**.eigenvec**`  files, which are needed for the PCA.
+These commands will generate both `.eigenval` and `.eigenvec`  files, which are needed for the PCA.
 
 The subsequent PCA analysis and data visulatisation will be done in [R](https://www.r-project.org/) which is freely available online.<br />
 
 ## PCA analysis in R ##
-The `**.eigenval**` and `**.eingenvec**` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
+The `.eigenval` and `**.eingenvec**` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
 
 ### R script example ###
 ``` {r}
@@ -189,12 +189,12 @@ spp <- rep (NA, length(pca$ind))
 spp[grep("YourSampleName1", pca$ind)] <- "Pop_A"
 spp[grep("YourSampleName2", pca$ind)] <- "Pop_B"
 
-k3 <- as_tibble(data.frame(pca,spp))
+k <- as_tibble(data.frame(pca,spp))
 
 #you can reorder your samples on the X axis by using the following command line
 new_order <- c("Pop_A", "Pop_B", "...")
 k3$spp <- factor(as.character(k3$spp), levels=new_order)
-k3 <- k3[order(k3$spp),]
+k <- k[order(k3$spp),]
 
 # define color pallete, if wanted.
 pal <- colorRampPalette(colors = c("lightblue", "blue"))(3)
