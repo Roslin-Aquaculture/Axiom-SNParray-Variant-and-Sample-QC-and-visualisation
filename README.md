@@ -27,7 +27,7 @@ From these two files, you can estimate the average CR of your indivduals/variant
 
 Individuals with CR below the selected threshold can be excluded using:
 ```
-plink --file (yourfilename) --remove (textfile) --recode --allow-extra-chr --make-bed --out (outputfile)
+plink --file myfilename --remove indlist.txt --recode --allow-extra-chr --make-bed --out (outputfile)
 ```
 
 the flag `**--remove**` requires a space/tab-delimited text file with different columns including:  <br />
@@ -45,8 +45,8 @@ The `**--exclude**` flag will do the same for variants.
 ## Basic visualusation of population structure with Principal Component Analysis (PCA) ##
 ### 1. data prep for PCA ###
 ```
-plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --indep-pairwise 50 10 0.1 --out (outputfile)
-plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --extract (outputfile).prune.in --make-bed --pca --out (outputfile)
+plink --file myfilename --double-id --allow-extra-chr --set-missing-var-ids @:# --indep-pairwise 50 10 0.1 --out outputfile
+plink --file myfilename --double-id --allow-extra-chr --set-missing-var-ids @:# --extract outputfile.prune.in --make-bed --pca --out outputfile
 ```
 These commands will generate both `**.eigenval**` and `**.eigenvec**`  files, which are needed for the PCA.
 
@@ -66,8 +66,8 @@ library(tidyverse)
 library(ggplot2)
 
 #upload data
-pca <- read_table2("./(yourfilename).eigenvec", col_names = FALSE)
-eigenval <- scan("./(yourfilename).eigenval")
+pca <- read_table2("./myfilename.eigenvec", col_names = FALSE)
+eigenval <- scan("./myfilename.eigenval")
 
 #remove first column
 pca <- pca[,-1]
@@ -167,7 +167,8 @@ done
 awk '/CV/ {print $3,$4}' *out | cut -c 4,7-20 > (myfile).cv.error
 ```
 
-### Visualising Admixture output ###
+### Visualising Admixture output in R ###
+Once the Admixture analysis is done and you have defined K value which will be used for visualisation, the data can be exported to into  `R` for visualisation:
 ```
 # load libraries
 
