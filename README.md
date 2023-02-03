@@ -9,7 +9,7 @@ The [Axas](https://www.thermofisher.com/uk/en/home/life-science/microarray-analy
 
 ## Generating genotype data from Axas ##
 
-Whilst the software provides standard parameters for sample and array QC, it is possible to extract genotypes from all individuals and filter them manually using [plink](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950838/). For this, genotyping data must be exported in `PLINK PED`, without specifying thresholds to the sample and variant CR. This will generate two files: a ".map" and ".ped" which must be imported to the HPC for furhter analysis.
+Whilst the software provides standard parameters for sample and array QC, it is possible to extract genotypes from all individuals and filter them manually using [PLINK](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950838/). For this, genotyping data must be exported in `PLINK PED`, without specifying thresholds to the sample and variant CR. This will generate two files: a ".map" and ".ped" which must be imported to the HPC for furhter analysis.
 
 ## Screening for Sample CR in PLINK ##
 
@@ -57,7 +57,7 @@ The subsequent PCA analysis and data visulatisation will be done in [R](https://
 ## PCA analysis in R ##
 The `.eigenval` and `.eingenvec` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
 
-### R script example ###
+### 2. R script  ###
 ```R
 #Install packages
 install.packages("tidyverse")
@@ -101,7 +101,7 @@ pva <- as_tibble(data.frame(pca,spp))
 pve <- data.frame(PC = 1:20, pve = eigenval/sum(eigenval)*100)
 cumsum(pve$pve)
 
-## set ggplot2 theme for plotting
+# set ggplot2 theme for plotting
 #modify text/colors/sizes as needed
 ggtheme = theme(legend.title = element_blank(),axis.text.y = element_text(colour="black", size=15),axis.text.x
  = element_text(colour="black", size=15),axis.title = element_text(colour="black", size=15),legend.position = "
