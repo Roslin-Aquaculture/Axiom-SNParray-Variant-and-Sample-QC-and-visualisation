@@ -17,7 +17,7 @@ Once the files have been imported to the HPC, QC can be done using `PLINK`. <br 
 Data missingess within individuals and variants can be explored using the command:
 
 ``` 
-plink --file (yourfilename) --missing 
+plink --file myfilename --missing 
 ```
 This command will generate two files: <br />
 `.imiss` (individual missingness) <br />
@@ -29,7 +29,7 @@ From these two files, you can estimate the average CR of your indivduals/variant
 
 Individuals with CR below the selected threshold can be excluded using:
 ```
-plink --file myfilename --remove indlist.txt --recode --allow-extra-chr --make-bed --out (outputfile)
+plink --file myfilename --remove indlist.txt --recode --allow-extra-chr --make-bed --out outputfile
 ```
 
 the flag `--remove` requires a space/tab-delimited text file with different columns including:  <br />
