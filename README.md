@@ -14,7 +14,7 @@ Whilst the software provides standard parameters for sample and array QC, it is 
 Once the files have been imported to the HPC the sample CR can be explored using PLINK.
 first, to explore data missingess within individuals and variants, we'll run the command:
 
-```
+``` 
 plink --file (yourfilename) --missing 
 ```
 This command will generate two files: <br />
@@ -53,7 +53,7 @@ These commands will generate both **.eigenval** and **.eigenvec**  files, which 
 ## PCA analysis in R ##
 The subsequent PCA analysis and data visulatisation will be done in [R](https://www.r-project.org/). The **.eigenval** and **.eingenvec** files can be exported to a local computer. Alternatively, R can be opened in the HPC, if available.
 ### R script example ###
-```
+``` {r}
 library(tidyverse)
 library(ggplot2)
 
