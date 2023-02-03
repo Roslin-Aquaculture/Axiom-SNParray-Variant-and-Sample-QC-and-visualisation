@@ -122,5 +122,5 @@ geom_point(size = 3) + xlim(-0.40,0.15) + ylim(-0.15,0.15) + coord_equal() +  ge
 , vjust=0) +  theme_bw() + xlab(paste0("PC1 (", signif(pve$pve[1], 3), "%)")) + ylab(paste0("PC3 (", signif(pve
 $pve[3], 3), "%)"))
 dev.off()
-
-
+```
+## Admixture analysis ##
