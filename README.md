@@ -33,8 +33,9 @@ plink --file (yourfilename) --remove (textfile) --recode --allow-extra-chr --out
 the flag **--remove** requires a space/tab-delimited text file with different columns including:  <br />
 family IDs - column 1 <br />
 within-family IDs - column 2 <br />
-the **--recode** flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
-the **--allow-extra-chr** flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
+
+the $${\color{blue}**--recode**}$$flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
+the $${\color{blue}**--allow-extra-chr**}$$ flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
 
 ---
 plink --file (yourfilename) --exclude (textfile) --recode --allow-extra-chr --out (outputfile)
