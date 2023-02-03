@@ -48,4 +48,9 @@ The **--exclude** flag will do the same for variants.
 plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --indep-pairwise 50 10 0.1 --out (outputfile)
 plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --extract (outputfile).prune.in --make-bed --pca --out (outputfile)
 ```
-These commands will generate the 
+These commands will generate both **.eigenval** and **.eigenvec**  files, which are needed for the PCA.
+
+## PCA analysis in R ##
+The subsequent PCA analysis and data visulatisation will be done in [R](https://www.r-project.org/). The **.eigenval** and **.eingenvec** files can be exported to a local computer. Alternatively, R can be opened in the HPC, if available.
+
+For the 
