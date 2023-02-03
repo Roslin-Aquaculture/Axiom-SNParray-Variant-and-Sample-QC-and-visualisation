@@ -140,7 +140,7 @@ Admixture analysis must be run from the HPC server. Program dowloand link, manua
 ### Running Admixture ###
 
 This software does not accept chromosome names which are not human. Therefore, the first column of the `.bim` file must be exchanged by 0. <br /> 
-The final `.bim`, `.bed`, `.fam` files were generated with `**PLINK**` after removing individuals/variants which did not pass the selected QC filters.
+The final `.bim`, `.bed`, `.fam` files were generated with `PLINK` after removing individuals/variants which did not pass the selected QC filters.
 
 ```
 awk '{$1=0;print $0}' (yourfile).bim > (yourfile).bim.tmp
