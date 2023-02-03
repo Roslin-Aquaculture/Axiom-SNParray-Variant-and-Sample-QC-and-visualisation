@@ -7,19 +7,19 @@ The [Axas](https://www.thermofisher.com/uk/en/home/life-science/microarray-analy
 
 ## Generating genotype data from Axas ##
 
-Whilst the software provides standard parameters for sample and array QC, it is possible to extract genotypes from all individuals and filter them manually using [plink](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950838/). For this, genotyping data must be exported in PLINK PED, without specifying thresholds to the sample and variant CR. This will generate two files: a ".map" and ".ped" which must be imported to the HPC for furhter analysis.
+Whilst the software provides standard parameters for sample and array QC, it is possible to extract genotypes from all individuals and filter them manually using [plink](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950838/). For this, genotyping data must be exported in `PLINK PED`, without specifying thresholds to the sample and variant CR. This will generate two files: a ".map" and ".ped" which must be imported to the HPC for furhter analysis.
 
 ## Screening for Sample CR in PLINK ##
 
-Once the files have been imported to the HPC, QC can be done using PLINK. <br /> 
+Once the files have been imported to the HPC, QC can be done using `PLINK`. <br /> 
 Data missingess within individuals and variants can be explored using the command:
 
 ``` 
 plink --file (yourfilename) --missing 
 ```
 This command will generate two files: <br />
-**.imiss** (individual missingness) <br />
-**.lmiss** (variant missingness) <br />
+`**.imiss**` (individual missingness) <br />
+`**.lmiss**` (variant missingness) <br />
 
 From these two files, you can estimate the average CR of your indivduals/variants as well as identify those that fall under the selected threshold. Whilst the threshold for sample CR is normally > 90%, and variant CR of > 95%, depending on your data and aims of your study, you can select different thresholds.
 
@@ -30,17 +30,17 @@ Individuals with CR below the selected threshold can be excluded using:
 plink --file (yourfilename) --remove (textfile) --recode --allow-extra-chr --make-bed --out (outputfile)
 ```
 
-the flag **--remove** requires a space/tab-delimited text file with different columns including:  <br />
+the flag `**--remove**` requires a space/tab-delimited text file with different columns including:  <br />
 family IDs - column 1 <br />
-within-family IDs - column 2 <br />
+Within-family IDs - column 2 <br />
 
-the **--recode** flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
-the **--allow-extra-chr** flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
-the **--make-bed** flag will generate a new **.bed** file with the remaining individuals/variants.
+the `**--recode**` flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
+the `**--allow-extra-chr**` flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
+the `**--make-bed**` flag will generate a new **.bed** file with the remaining individuals/variants.
 ```
 plink --file (yourfilename) --exclude (textfile) --recode --allow-extra-chr --make-bed --out (outputfile)
 ```
-The **--exclude** flag will do the same for variants.
+The `**--exclude**` flag will do the same for variants.
 
 ## Basic visualusation of population structure with Principal Component Analysis (PCA) ##
 ### 1. data prep for PCA ###
@@ -48,11 +48,12 @@ The **--exclude** flag will do the same for variants.
 plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --indep-pairwise 50 10 0.1 --out (outputfile)
 plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --extract (outputfile).prune.in --make-bed --pca --out (outputfile)
 ```
-These commands will generate both **.eigenval** and **.eigenvec**  files, which are needed for the PCA.
+These commands will generate both `**.eigenval**` and `**.eigenvec**`  files, which are needed for the PCA.
 
 The subsequent PCA analysis and data visulatisation will be done in [R](https://www.r-project.org/) which is freely available online.<br />
+
 ## PCA analysis in R ##
- The **.eigenval** and **.eingenvec** files can be exported to a local computer. Alternatively, R can be opened in the HPC, if available.<br />
+The `**.eigenval**` and `**.eingenvec**` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
 
 ### R script example ###
 ``` {r}
@@ -136,8 +137,8 @@ Admixture analysis must be run from the HPC server. Program dowloand link, manua
 
 ### Running Admixture ###
 
-This software does not accept chromosome names which are not human. Therefore, the first column of the .bim file must be exchanged by 0. <br /> 
-The final .bim, .bed, .fam files were generated with **PLINK** after removing individuals/variants which did not pass the selected QC filters.
+This software does not accept chromosome names which are not human. Therefore, the first column of the `.bim` file must be exchanged by 0. <br /> 
+The final `.bim`, `.bed`, `.fam` files were generated with `**PLINK**` after removing individuals/variants which did not pass the selected QC filters.
 
 ```
 awk '{$1=0;print $0}' (yourfile).bim > (yourfile).bim.tmp
