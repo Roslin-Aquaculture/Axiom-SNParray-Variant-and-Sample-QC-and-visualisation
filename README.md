@@ -7,11 +7,11 @@ The [Axas](https://www.thermofisher.com/uk/en/home/life-science/microarray-analy
 
 # Generating genotype data from Axas
 
-Whilst the software provides standard parameters for sample and array QC, it is possible to extract genotypes from all individuals and filter them manually using [plink](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950838/). For this, genotyping data must be exported in plink PED, without specifying thresholds to the sample and marker CR. This will generate two files: a ".map" and ".ped" which must be imported to the HPC for furhter analysis.
+Whilst the software provides standard parameters for sample and array QC, it is possible to extract genotypes from all individuals and filter them manually using [plink](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950838/). For this, genotyping data must be exported in PLINK PED, without specifying thresholds to the sample and marker CR. This will generate two files: a ".map" and ".ped" which must be imported to the HPC for furhter analysis.
 
-# Screening for Sample CR in plink #
+# Screening for Sample CR in PLINK #
 
-Once the files have been imported to the HPC the sample CR can be explored using plink.
+Once the files have been imported to the HPC the sample CR can be explored using PLINK.
 first, to explore data missingess within individuals and markers, we'll run the command:
 
 --- 
@@ -25,6 +25,14 @@ From these two files, you can estimate the average CR of your indivduals/markers
 
 # Excluding individuals and markers with non-desirable CR #
 
+Individuals with CR below the selected threshold can be excluded using:
+---
+plink --file (yourfilename) --remove (textfile) --recode --allow-extra-chr --out (outputfile)
+---
 
-
+the flag **--remove** requires a space/tab-delimited text file with different columns including:  <br />
+family IDs - column 1 <br />
+within-family IDs - column 2 <br />
+the **--recode** flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
+the **--allow-extra-chr** flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
 
