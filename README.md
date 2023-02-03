@@ -59,7 +59,7 @@ The `.eigenval` and `.eingenvec` files can be exported to a local computer. Alte
 ```R
 #Install packages
 install.packages("tidyverse")
-install.packages(ggplot2")
+install.packages("ggplot2")
 
 #Load packages
 library(tidyverse)
