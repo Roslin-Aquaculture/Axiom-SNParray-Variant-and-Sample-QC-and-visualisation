@@ -14,9 +14,9 @@ Whilst the software provides standard parameters for sample and array QC, it is 
 Once the files have been imported to the HPC the sample CR can be explored using PLINK.
 first, to explore data missingess within individuals and variants, we'll run the command:
 
---- 
+```
 plink --file (yourfilename) --missing 
----
+```
 This command will generate two files: <br />
 **.imiss** (individual missingness) <br />
 **.lmiss** (variant missingness) <br />
@@ -26,22 +26,26 @@ From these two files, you can estimate the average CR of your indivduals/variant
 ## Excluding individuals and variants with non-desirable CR ##
 
 Individuals with CR below the selected threshold can be excluded using:
----
+```
 plink --file (yourfilename) --remove (textfile) --recode --allow-extra-chr --out (outputfile)
----
+```
 
 the flag **--remove** requires a space/tab-delimited text file with different columns including:  <br />
 family IDs - column 1 <br />
 within-family IDs - column 2 <br />
 
-the 
-```dif @@ --recode @@ ```
-flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
+the **--recode** flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
 the **--allow-extra-chr** flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
 
----
+```
 plink --file (yourfilename) --exclude (textfile) --recode --allow-extra-chr --out (outputfile)
----
+```
 The **--exclude** flag will do the same for variants.
 
 ## Basic visualusation of population structure with Principal Component Analysis (PCA) ##
+### 1. data prep for PCA ###
+```
+plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --indep-pairwise 50 10 0.1 --out (outputfile)
+plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids @:# --extract (outputfile).prune.in --make-bed --pca --out (outputfile)
+```
+These commands will generate the 
