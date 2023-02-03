@@ -35,7 +35,7 @@ family IDs - column 1 <br />
 within-family IDs - column 2 <br />
 
 the 
-```dif @@ **--recode** @@ ```
+```dif @@ --recode @@ ```
 flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
 the **--allow-extra-chr** flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
 
