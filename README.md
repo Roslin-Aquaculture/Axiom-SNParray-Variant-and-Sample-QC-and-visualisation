@@ -56,7 +56,7 @@ The subsequent PCA analysis and data visulatisation will be done in [R](https://
 The `.eigenval` and `.eingenvec` files can be exported to a local computer. Alternatively, `R` can be opened in the HPC, if available.<br />
 
 ### R script example ###
-``` R
+```R
 #Install packages
 install.packages("tidyverse")
 install.packages(ggplot2")
