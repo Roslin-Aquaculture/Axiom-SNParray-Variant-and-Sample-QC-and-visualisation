@@ -11,8 +11,8 @@ Whilst the software provides standard parameters for sample and array QC, it is 
 
 ## Screening for Sample CR in PLINK ##
 
-Once the files have been imported to the HPC the sample CR can be explored using PLINK.
-first, to explore data missingess within individuals and variants, we'll run the command:
+Once the files have been imported to the HPC, QC can be done using PLINK. <br /> 
+Data missingess within individuals and variants can be explored using the command:
 
 ``` 
 plink --file (yourfilename) --missing 
@@ -27,7 +27,7 @@ From these two files, you can estimate the average CR of your indivduals/variant
 
 Individuals with CR below the selected threshold can be excluded using:
 ```
-plink --file (yourfilename) --remove (textfile) --recode --allow-extra-chr --out (outputfile)
+plink --file (yourfilename) --remove (textfile) --recode --allow-extra-chr --make-bed --out (outputfile)
 ```
 
 the flag **--remove** requires a space/tab-delimited text file with different columns including:  <br />
@@ -36,9 +36,9 @@ within-family IDs - column 2 <br />
 
 the **--recode** flag will generate a generate a new file, excluding the selected genotypes, as PLINK will preserve all genotypes. <br />
 the **--allow-extra-chr** flag can be used when chromosome codes are not recognised (e.g. if you're using genomes assembled in a contig level) and their names do not begin with a digit.
-
+the **--make-bed** flag will generate a new **.bed** file with the remaining individuals/variants.
 ```
-plink --file (yourfilename) --exclude (textfile) --recode --allow-extra-chr --out (outputfile)
+plink --file (yourfilename) --exclude (textfile) --recode --allow-extra-chr --make-bed --out (outputfile)
 ```
 The **--exclude** flag will do the same for variants.
 
@@ -50,10 +50,17 @@ plink --file (yourfilename) --double-id --allow-extra-chr --set-missing-var-ids 
 ```
 These commands will generate both **.eigenval** and **.eigenvec**  files, which are needed for the PCA.
 
+The subsequent PCA analysis and data visulatisation will be done in [R](https://www.r-project.org/) which is freely available online.<br />
 ## PCA analysis in R ##
-The subsequent PCA analysis and data visulatisation will be done in [R](https://www.r-project.org/). The **.eigenval** and **.eingenvec** files can be exported to a local computer. Alternatively, R can be opened in the HPC, if available.
+ The **.eigenval** and **.eingenvec** files can be exported to a local computer. Alternatively, R can be opened in the HPC, if available.<br />
+
 ### R script example ###
 ``` {r}
+#Install packages
+install.packages("tidyverse")
+install.packages(ggplot2")
+
+#Load packages
 library(tidyverse)
 library(ggplot2)
 
@@ -124,3 +131,242 @@ $pve[3], 3), "%)"))
 dev.off()
 ```
 ## Admixture analysis ##
+
+Admixture analysis must be run from the HPC server. Program dowloand link, manual and publications are available [here](https://dalexander.github.io/admixture/)
+
+### Running Admixture ###
+
+This software does not accept chromosome names which are not human. Therefore, the first column of the .bim file must be exchanged by 0. <br /> 
+The final .bim, .bed, .fam files were generated with **PLINK** after removing individuals/variants which did not pass the selected QC filters.
+
+```
+awk '{$1=0;print $0}' (yourfile).bim > (yourfile).bim.tmp
+mv (yourfile).bim.tmp (yourfile).bim
+```
+Now, Admixture can be run by applying the following commands: 
+
+```
+admixture --cv (yourfile).bed 2 > log2.out
+
+# Two files will be produced
+# The .Q file contains the cluster assignments for each individual
+# The .P file contains the population allele frequencies for each SNP included in the analysis
+
+# Contrary to Structure analysis, admixutre calculates the best number of K clusters representing the population being analysed, with no prior assumption. 
+# Therefore, in this example, a set of k clusters, generally from 2 to 10, will be analysed in a loop and the output directed to a log.out file. However, more this value can be adjusted based on preivous knowledge of the population set being analysed in the study. must test the best fitting K value for the population being analysed.  
+
+for i in {2..10}
+do
+admixture --cv (myfile).bed $i > log${i}.out
+done
+
+# The best fitting number of K clusters will be the one with the lowest number of cross-validation error
+# This value can be extracted from the log.out generated files using the following command:
+
+awk '/CV/ {print $3,$4}' *out | cut -c 4,7-20 > sw_poly.cv.error
+```
+
+module load R/4.0.0-foss-2020a
+
+
+
+tbl1=read.table("sw_poly.4.Q")
+tbl2=read.table("sw_poly.list")
+pca <- cbind(tbl1,tbl2)
+names(pca)[5] <- "ind"
+spp <- rep (NA, length(pca$ind))
+
+spp[grep("Scilly", pca$ind)] <- "Isles_of_Scilly"
+spp[grep("Bude", pca$ind)] <- "Bude"
+spp[grep("Whistsandbay_HT", pca$ind)] <- "WhistBay_HT"
+spp[grep("Whistsandbay_LT", pca$ind)] <- "WhistBay_LT"
+spp[grep("Porthcotan_Bay", pca$ind)] <- "Porthcotan_Bay"
+spp[grep("Porthleven", pca$ind)] <- "Porthleven"
+spp[grep("Trevone", pca$ind)] <- "Trevone"
+spp[grep("Polkeris", pca$ind)] <- "Polkeris"
+spp[grep("Mevagissey", pca$ind)] <- "Mevagissey"
+spp[grep("Mousehole", pca$ind)] <- "Mousehole"
+spp[grep("Godrevy", pca$ind)] <- "Godrevy"
+spp[grep("St_Anthonys_Head", pca$ind)] <- "St_Anthonys_Head"
+spp[grep("Torquay", pca$ind)] <- "Torquay"
+spp[grep("Feok", pca$ind)] <- "Feok"
+spp[grep("Newquay", pca$ind)] <- "Newquay"
+spp[grep("Portmeor", pca$ind)] <- "Portmeor"
+spp[grep("Port_lune", pca$ind)] <- "Port_lune"
+spp[grep("Tintangel_Castle", pca$ind)] <- "Tintangel_Castle"
+spp[grep("Pinksoncreek_", pca$ind)] <- "Camel_estuary"
+spp[grep("Budleigh", pca$ind)] <- "Budleigh"
+spp[grep("Hallsends_north", pca$ind)] <- "Hallsends_north"
+spp[grep("Helford", pca$ind)] <- "Helford"
+spp[grep("St_Agnes", pca$ind)] <- "St_Agnes"
+spp[grep("Exmouth_LT", pca$ind)] <- "Exmouth_LT"
+spp[grep("Port_Gavirn_LT", pca$ind)] <- "Port_Gavirn_LT"
+spp[grep("Appledore", pca$ind)] <- "Appledore"
+spp[grep("Starcross", pca$ind)] <- "Starcross"
+spp[grep("Port_Gavirn_HT", pca$ind)] <- "Port_Gavirn_HT"
+spp[grep("Exmouth_HT", pca$ind)] <- "Exmouth_HT"
+spp[grep("Millbay_Marina_", pca$ind)] <- "Millbay_Marina"
+spp[grep("BBC", pca$ind)] <- "BBC"
+spp[grep("DDE", pca$ind)] <- "DDE"
+spp[grep("FIN", pca$ind)] <- "FIN"
+spp[grep("GR", pca$ind)] <- "GR"
+spp[grep("BO", pca$ind)] <- "BO"
+spp[grep("IC", pca$ind)] <- "IC"
+spp[grep("VG", pca$ind)] <- "VG"
+
+k3 <- as_tibble(data.frame(pca,spp))
+new_order <- c("Budleigh", 
+	"Exmouth_LT", 
+	"Exmouth_HT", 
+	"Starcross", 
+	"Torquay", 
+	"Hallsends_north", 
+	"Millbay_Marina", 
+	"WhistBay_LT", 
+	"WhistBay_HT",
+	"Polkeris", 
+	"Mevagissey",
+	"Port_lune",
+	"St_Anthonys_Head", 
+	"Feok" , 
+	"Helford",  
+	"Porthleven", 
+	"Mousehole", 
+	"Isles_of_Scilly",
+	"Portmeor",
+	"Godrevy", 
+	"St_Agnes", 
+	"Newquay", 
+	"Porthcotan_Bay", 
+	"Camel_estuary", 
+	"Trevone", 
+	"Tintangel_Castle", 
+	"Port_Gavirn_LT", 
+	"Port_Gavirn_HT", 
+	"Bude", 
+	"Appledore", "BBC","FIN","DDE","GR","VG", "BO","IC")
+
+k3$spp <- factor(as.character(k3$spp), levels=new_order)
+k3 <- k3[order(k3$spp),]
+
+#pal <- colorRampPalette(colors = c("lightblue", "blue"))(3)
+#pdf("k4-maf001.pdf", width=10)
+#barplot(t(as.matrix(k3)), col=pal, width=0.1, space=0.2, las=2, xlab="Populations", ylab="Ancestry", border=NA, names.arg=(k3$pop))
+#dev.off()
+
+
+pdf("k4-sw-4addsp-poly.pdf", width=20, height=10)
+barplot(t(as.matrix(k3)), col=c("#71D0F5FF","#F05C3BFF","#FFA500","#0073C2FF"), width=0.1, space=0.2, las=2, xlab="Populations", ylab="Ancestry", border=NA, names.arg=(k3$spp))
+dev.off()
+#yellow "#FED439FF" 
+#blue "#0073C2FF"
+#red "#F05C3BFF"
+#light blue "#71D0F5FF" 
+#orange "#FFA500"
+#green "#236F21"
+
+
+
+####k5
+
+
+
+tbl1=read.table("sw_poly.5.Q")
+tbl2=read.table("sw_poly.list")
+pca <- cbind(tbl1,tbl2)
+names(pca)[6] <- "ind"
+spp <- rep (NA, length(pca$ind))
+
+spp[grep("Scilly", pca$ind)] <- "Isles_of_Scilly"
+spp[grep("Bude", pca$ind)] <- "Bude"
+spp[grep("Whistsandbay_HT", pca$ind)] <- "WhistBay_HT"
+spp[grep("Whistsandbay_LT", pca$ind)] <- "WhistBay_LT"
+spp[grep("Porthcotan_Bay", pca$ind)] <- "Porthcotan_Bay"
+spp[grep("Porthleven", pca$ind)] <- "Porthleven"
+spp[grep("Trevone", pca$ind)] <- "Trevone"
+spp[grep("Polkeris", pca$ind)] <- "Polkeris"
+spp[grep("Mevagissey", pca$ind)] <- "Mevagissey"
+spp[grep("Mousehole", pca$ind)] <- "Mousehole"
+spp[grep("Godrevy", pca$ind)] <- "Godrevy"
+spp[grep("St_Anthonys_Head", pca$ind)] <- "St_Anthonys_Head"
+spp[grep("Torquay", pca$ind)] <- "Torquay"
+spp[grep("Feok", pca$ind)] <- "Feok"
+spp[grep("Newquay", pca$ind)] <- "Newquay"
+spp[grep("Portmeor", pca$ind)] <- "Portmeor"
+spp[grep("Port_lune", pca$ind)] <- "Port_lune"
+spp[grep("Tintangel_Castle", pca$ind)] <- "Tintangel_Castle"
+spp[grep("Pinksoncreek_", pca$ind)] <- "Camel_estuary"
+spp[grep("Budleigh", pca$ind)] <- "Budleigh"
+spp[grep("Hallsends_north", pca$ind)] <- "Hallsends_north"
+spp[grep("Helford", pca$ind)] <- "Helford"
+spp[grep("St_Agnes", pca$ind)] <- "St_Agnes"
+spp[grep("Exmouth_LT", pca$ind)] <- "Exmouth_LT"
+spp[grep("Port_Gavirn_LT", pca$ind)] <- "Port_Gavirn_LT"
+spp[grep("Appledore", pca$ind)] <- "Appledore"
+spp[grep("Starcross", pca$ind)] <- "Starcross"
+spp[grep("Port_Gavirn_HT", pca$ind)] <- "Port_Gavirn_HT"
+spp[grep("Exmouth_HT", pca$ind)] <- "Exmouth_HT"
+spp[grep("Millbay_Marina_", pca$ind)] <- "Millbay_Marina"
+spp[grep("BBC", pca$ind)] <- "BBC"
+spp[grep("DDE", pca$ind)] <- "DDE"
+spp[grep("FIN", pca$ind)] <- "FIN"
+spp[grep("GR", pca$ind)] <- "GR"
+spp[grep("BO", pca$ind)] <- "BO"
+spp[grep("IC", pca$ind)] <- "IC"
+spp[grep("VG", pca$ind)] <- "VG"
+
+k3 <- as_tibble(data.frame(pca,spp))
+new_order <- c("Budleigh", 
+	"Exmouth_LT", 
+	"Exmouth_HT", 
+	"Starcross", 
+	"Torquay", 
+	"Hallsends_north", 
+	"Millbay_Marina", 
+	"WhistBay_LT", 
+	"WhistBay_HT",
+	"Polkeris", 
+	"Mevagissey",
+	"Port_lune",
+	"St_Anthonys_Head", 
+	"Feok" , 
+	"Helford",  
+	"Porthleven", 
+	"Mousehole", 
+	"Isles_of_Scilly",
+	"Portmeor",
+	"Godrevy", 
+	"St_Agnes", 
+	"Newquay", 
+	"Porthcotan_Bay", 
+	"Camel_estuary", 
+	"Trevone", 
+	"Tintangel_Castle", 
+	"Port_Gavirn_LT", 
+	"Port_Gavirn_HT", 
+	"Bude", 
+	"Appledore", "BBC","FIN","DDE","GR","VG", "BO","IC")
+
+k3$spp <- factor(as.character(k3$spp), levels=new_order)
+k3 <- k3[order(k3$spp),]
+
+#pal <- colorRampPalette(colors = c("lightblue", "blue"))(3)
+#pdf("k4-maf001.pdf", width=10)
+#barplot(t(as.matrix(k3)), col=pal, width=0.1, space=0.2, las=2, xlab="Populations", ylab="Ancestry", border=NA, names.arg=(k3$pop))
+#dev.off()
+
+
+pdf("k5-sw-4addsp-polymaf0.01.pdf", width=20, height=10)
+barplot(t(as.matrix(k3)), col=c("#236F21","#71D0F5FF","#F05C3BFF","#0073C2FF","#FFA500"), width=0.1, space=0.2, las=2, xlab="Populations", ylab="Ancestry", border=NA, names.arg=(k3$spp))
+dev.off()
+#yellow "#FED439FF" 
+#blue "#0073C2FF"
+#red "#F05C3BFF"
+#light blue "#71D0F5FF" 
+#orange "#FFA500"
+#green "#236F21"
+
+``` {r}
+
+### R script example ###
+``` {r}
